@@ -1,0 +1,60 @@
+
+ 📈 PhysioNet ECG Image Digitization Solution
+
+🚀 Overview
+
+In this project, I developed a sophisticated multi-stage computer vision pipeline to tackle the challenge of ECG Digitization. My solution converts physical ECG paper records (scans or photos) into high-fidelity digital signals. This is achieved by combining deep learning for segmentation with geometric transformations for rectification.
+
+🏆 Competition Results & Performance
+
+My methodology achieved a high ranking on the Kaggle Leaderboard by focusing on transparency and rigorous Visual Quality Assurance (QA).
+
+Public Score:18.75 (SNR dB)
+Rank:Top 15 
+
+ 📸 Proof of Achievement
+
+(Referencing the attached files: `pg 1.jpeg` and `pg 2.jpeg`)
+I have included snapshots of my final leaderboard standing and the successful submission logs, which verify the signal-to-noise ratio (SNR) performance.
+
+ 🛠 My Methodology & Pipeline Architecture
+
+I designed the solution as a modular Pipeline Class, allowing for independent debugging and optimization of each stage.
+
+Stage 0: Geometric Normalization
+
+To handle images taken at different angles or rotations:
+
+Model: ResNet-based Stage0Net.
+Action: I implemented 13-point landmark detection to identify lead markers and determine the correct image orientation.
+Result: All input images are automatically rotated and standardized to a fixed 3024×4032 resolution.
+
+ Stage 1: Grid Rectification (Perspective Correction)
+
+Real-world paper is often wrinkled or photographed with perspective distortion:
+
+Model:ResNet34-Unet (Stage1Net).
+Action:The model detects the underlying grid coordinates. I then applied Homography transformations to "flatten" the paper.
+Result: A perfectly aligned grid where time and voltage axes are linear and predictable.
+
+Stage 2: Segmentation & Waveform Extraction
+
+The core of my digitization engine:
+
+Model:U-Net with CoordConv layers(Net3).
+Architecture: By using CoordConv, I allowed the model to maintain spatial awareness of where it is in the ECG strip.
+Process:After generating a segmentation mask, I developed a `pixel_to_series` conversion logic to extract numerical values. I also applied Einthoven’s Law () to ensure mathematical consistency between leads.
+
+ 📂 Project Structure & Innovations
+
+physionet-ecg-images-digitization.ipynb: My full end-to-end implementation code.
+Visual QA System: I built a custom visualization framework to inspect the output of every stage (Scan → Rotated → Rectified → Mask → Signal).
+Robust Pre-processing: My pipeline handles noise, shadows, and varying paper textures through advanced image normalization techniques.
+
+⚙️ How to Use
+
+1. Open the `.ipynb` notebook.
+2. The Pipeline Class I created allows you to process any image by simply calling `pipeline.process(image_path)`.
+3. The results are automatically formatted into the `submission.csv` format required for the PhysioNet challenge.
+
+Kaggle Competition: PhysioNet ECG Image Digitization
